@@ -36,7 +36,7 @@
               }else if(jsobj.error) {
                   var contentstr = jsobj.error._message + ", " + jsobj.error.message;
                   x.textContent = contentstr
-              }else { x.textContent = "error";}
+              }else { x.textContent = jsobj.message || "error";}
               document.body.appendChild(x);
               //document.writeln(xhr.responseText);
            }};
