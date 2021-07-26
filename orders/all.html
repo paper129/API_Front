@@ -1,0 +1,97 @@
+<html>
+<head><title>Get all Orders</title></head>
+<body>
+    <form name="myForm">
+        <p><label for="token">Token:</label>
+        <input type="text" name="token" id="token" required="true"></p>
+        <input value="Submit" type="button" onclick="sendJSON()">
+    </form>
+    <p class="result" style="color:green"> 
+        <tr>
+            <td>Order ID </td> 
+            <td>Product ID</td>
+            <td>Product name</td> 
+            <td>Quantity </td> 
+        </tr>
+    </p>
+    <script>
+        function sendJSON(){
+       
+       // Creating a XHR object
+       let xhr = new XMLHttpRequest();
+       let url = "http://localhost:3000/orders";
+   
+       // open a connection
+       xhr.open("GET", url);
+   
+       // Set the request header i.e. which type of content you are sending
+       xhr.setRequestHeader("Accept", "application/json");
+       xhr.setRequestHeader("Content-Type", "application/json");
+       xhr.setRequestHeader("Authorization", "Bearer " + token.value)
+
+   
+       // Create a state change callback
+       xhr.onreadystatechange = function () {
+           if (xhr.readyState === 4) {
+            var jsobj = JSON.parse(xhr.responseText)
+            console.log(xhr.responseText);
+            var x = document.createElement("div"); 
+
+            if (jsobj.count > 0){
+                var table = document.createElement('table');
+                    for (var i = 0; i < jsobj.count; i++){
+                        var tr = document.createElement('tr');   
+                        var td1 = document.createElement('td');
+                        var td2 = document.createElement('td');
+                        var td3 = document.createElement('td');
+                        var td4 = document.createElement('td');
+                        var text1 = document.createTextNode(jsobj.orders[i]._id);
+                        var text2 = document.createTextNode(jsobj.orders[i].product._id);
+                        var text3 = document.createTextNode(jsobj.orders[i].product.name);
+                        var text4 = document.createTextNode(jsobj.orders[i].quantity);
+
+                        td1.appendChild(text1);
+                        td2.appendChild(text2);
+                        td3.appendChild(text3);
+                        td4.appendChild(text4);
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tr.appendChild(td3);
+                        tr.appendChild(td4);
+
+                        table.appendChild(tr);
+                    }
+                document.body.appendChild(table);
+                document.body.append("========================================")
+            }
+            if(jsobj.error) {
+                var contentstr = jsobj.error.message;
+                x.textContent = contentstr
+                document.body.appendChild(x);
+                  
+            }
+            if(jsobj.message){
+                var contentstr = jsobj.message;
+                x.textContent = contentstr
+                document.body.appendChild(x);
+            }
+
+            console.log(xhr.status);
+           }};
+   
+       // Converting JSON data to string
+       //var jsonstr = {}//{email: username.value, password: password.value }
+       //var data = JSON.stringify(jsonstr);
+   
+       // Sending data with the request
+       xhr.send();
+       
+       //document.writeln(xhr.status)
+       //document.writeln(data)
+       //document.writeln(xhr.responseText);
+   }
+
+
+    </script>
+</body>
+</html>

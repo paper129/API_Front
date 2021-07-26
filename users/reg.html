@@ -1,0 +1,58 @@
+<html>
+<head><title>Register</title></head>
+<body>
+    <form name="myForm">
+        <p><label for="username">Email:</label>
+        <input type="text" name="username" id="username"></p>
+
+        <p><label for="password">Password:</label>
+        <input type="password" name="password" id="password"></p>
+
+        <input value="Submit" type="button" onclick="regJSON()">
+    </form>
+    <p class="result" style="color:green"></p>
+    <script>
+        function regJSON(){
+       
+       // Creating a XHR object
+       let xhr = new XMLHttpRequest();
+       let url = "http://localhost:3000/user/signup";
+   
+       // open a connection
+       xhr.open("POST", url);
+   
+       // Set the request header i.e. which type of content you are sending
+       xhr.setRequestHeader("Accept", "application/json");
+       xhr.setRequestHeader("Content-Type", "application/json");
+
+       // Create a state change callback
+       xhr.onreadystatechange = function () {
+           if (xhr.readyState === 4) {
+            var x = document.createElement("div");  // Creates a new <div> node
+              console.log(xhr.status);
+              var jsobj = JSON.parse(xhr.responseText);
+              if (jsobj.message == "User created"){
+                  x.textContent = jsobj.message; 
+              }else if(jsobj.error) {
+                  var contentstr = jsobj.error._message + ", " + jsobj.error.message;
+                  x.textContent = contentstr
+              }else { x.textContent = "error";}
+              document.body.appendChild(x);
+              //document.writeln(xhr.responseText);
+           }};
+   
+       // Converting JSON data to string
+       var jsonstr = {email: username.value, password: password.value }
+       var data = JSON.stringify(jsonstr);
+   
+       // Sending data with the request
+       xhr.send(data);
+       
+       //document.writeln(xhr.status)
+       //document.writeln(data)
+       //document.writeln(xhr.responseText);
+   }
+
+    </script>
+</body>
+</html>

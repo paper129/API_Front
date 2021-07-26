@@ -1,0 +1,89 @@
+<html>
+<head><title>DELETE order</title></head>
+<body>
+    <form name="myForm">
+        <p><label for="token">Token:</label>
+        <input type="text" name="token" id="token"></p>
+
+        <p><label for="orderId">orderId:</label>
+        <input type="text" name="orderId" id="orderId"></p>
+
+        <input value="Submit" type="button" onclick="regJSON()">
+    </form>
+    <p class="result" style="color:green"> 
+        Result:
+    </p>
+
+    <script>
+        function regJSON(){
+       
+       // Creating a XHR object
+       let xhr = new XMLHttpRequest();
+       let url = "http://localhost:3000/orders/" + orderId.value;
+   
+       // open a connection
+       xhr.open("DELETE", url);
+   
+       // Set the request header i.e. which type of content you are sending
+       xhr.setRequestHeader("Accept", "application/json");
+       xhr.setRequestHeader("Content-Type", "application/json");
+       xhr.setRequestHeader("Authorization", "Bearer " + token.value)
+
+       // Create a state change callback
+       xhr.onreadystatechange = function () {
+           if (xhr.readyState === 4) {
+            var x = document.createElement("div");  // Creates a new <div> node
+            var table = document.createElement('table');
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+            var jsobj = JSON.parse(xhr.responseText);
+
+              if (jsobj.product){
+                        var tr = document.createElement('tr');   
+                        var td1 = document.createElement('td');
+                        var td2 = document.createElement('td');
+                        var td3 = document.createElement('td');
+                        var td4 = document.createElement('td');
+                        var text1 = document.createTextNode(jsobj.product.name);
+                        var text2 = document.createTextNode(jsobj.product.price);
+                        var text3 = document.createTextNode(jsobj.product.productImage);
+                        var text4 = document.createTextNode(jsobj.product._id)
+
+                        td1.appendChild(text1);
+                        td2.appendChild(text2);
+                        td3.appendChild(text3);
+                        td4.appendChild(text4);
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tr.appendChild(td3);
+                        tr.appendChild(td4);
+
+                        table.appendChild(tr);
+                document.body.appendChild(table);
+              }
+              else if(jsobj.error) {
+                  var contentstr = jsobj.error.message;
+                  x.textContent = contentstr
+              }
+              else { 
+                  x.textContent = jsobj.message;
+                }
+              document.body.appendChild(x);
+              //document.writeln(xhr.responseText);
+           }};
+   
+       // Converting JSON data to string
+       //var jsonstr = {name: productName.value, price: price.value, productImage: productImage.value}
+       //var data = JSON.stringify(jsonstr);
+   
+       // Sending data with the request
+       xhr.send();
+       
+       //document.writeln(xhr.status)
+       //document.writeln(data)
+       //document.writeln(xhr.responseText);
+   }
+
+    </script>
+</body>
+</html>
